@@ -229,6 +229,8 @@ input[type=text]:focus,textarea:focus{border-color:#c9a05a;box-shadow:0 0 0 4px 
 .opts input{accent-color:#a07a3c;margin:0}
 .err{color:#b3422f;font-size:17px;min-height:1.4em;margin:0}
 .rf .btn{justify-self:center;margin-top:2px}
+.rf .btn:disabled{opacity:.6;cursor:wait}
+.rf .ok{text-align:center;font-size:19px;line-height:1.8;color:var(--deep);margin:18px 0 6px}
 
 /* ============ thanks ============ */
 .thanks2{padding:0 0 10px}
@@ -385,7 +387,8 @@ var INVITE = {
   hours: 4,                                              /* مدة الحفل بالساعات (للتقويم) */
   timeline: [["٦:٢٠ مساءً","صلاة العشاء","mosque"],["٧:٠٠ مساءً","وصول الضيوف","arch"],["٧:٣٠ مساءً","دخول العروسة","bride"],["٩:٣٠ مساءً","استراحة وبوفيه","dome"],["١١:٠٠ مساءً","ختام الحفل","drum"]],
   mapUrl: "https://maps.app.goo.gl/khAapj922mVhkXKj7",       /* رابط الموقع من خرائط جوجل */
-  rsvp: [{label:"ضيوف العريس", phone:"REMOVED"},{label:"ضيوف العروسة", phone:"REMOVED"}]
+  rsvp: [{label:"ضيوف العريس", side:"groom"},{label:"ضيوف العروسة", side:"bride"}],
+  rsvpUrl: "https://script.google.com/macros/s/AKfycbziS04zncDU3ti75U8AzP7ULYSZFyt47bqII6bUwHzl-ze08s3zjDyyrFCuilB01rtxzA/exec"   /* رابط Google Apps Script (Deploy > Web app)، الردود تُحفظ في Google Sheet */
 };
 var IM = {}; ["mosque","arch","bride","dome","drum","flower"].forEach(function(k){ IM[k] = "assets/tl-" + k + ".webp"; });
 var MUSIC_DELAY = 3000; /* الموسيقى تبدأ بعد فتح الدعوة بكم ملي ثانية (3000 = 3 ثوانٍ) */
@@ -536,7 +539,7 @@ function countUp(){
 new IntersectionObserver(function(es, o){ if(es[0].isIntersecting){ o.disconnect(); setTimeout(countUp, reduce ? 0 : 250); } }, {threshold:.4}).observe(document.querySelector(".cd"));
 setInterval(tick, 1000);
 
-/* تأكيد الحضور عبر واتساب: نموذجان، واحد للعريس وواحد للعروسة */
+/* تأكيد الحضور: نموذجان، واحد للعريس وواحد للعروسة، والرد يُحفظ في Google Sheet */
 (function(){
   var tabs = '<div class="tabs" role="tablist"><span class="ind" aria-hidden="true"></span>', forms = "";
   INVITE.rsvp.forEach(function(r, i){
@@ -557,11 +560,16 @@ setInterval(tick, 1000);
       var nm = f.querySelector(".n"), err = f.querySelector(".err"), name = nm.value.trim();
       if(!name){ err.textContent = "اكتب اسمك قبل الإرسال."; nm.focus(); return; }
       err.textContent = "";
-      var yes = f.querySelector("input[type=radio]:checked").value === "yes", msg = f.querySelector(".m").value.trim();
-      var t = yes ? "أنا " + name + " إن شاء الله سأحضر حفل زفاف " + INVITE.groom + " و" + INVITE.bride + "."
-                  : "أنا " + name + " أعتذر عن عدم الحضور، وكل التوفيق لـ" + INVITE.groom + " و" + INVITE.bride + ".";
-      if(msg) t += "\n" + msg;
-      window.open("https://wa.me/" + r.phone + "?text=" + encodeURIComponent(t), "_blank", "noopener");
+      var yes = f.querySelector("input[type=radio]:checked").value === "yes", btn = f.querySelector(".s");
+      btn.disabled = true;
+      fetch(INVITE.rsvpUrl, {method:"POST", body:new URLSearchParams({side:r.side, name:name, attending:yes ? "yes" : "no", message:f.querySelector(".m").value.trim()})})
+        .then(function(res){ return res.json(); })
+        .then(function(d){
+          if(!d.ok) throw 0;
+          f.innerHTML = '<p class="ok" role="status"></p>';
+          f.firstChild.textContent = yes ? "شكرًا يا " + name + "، وصلنا تأكيد حضورك وننتظرك بكل حب." : "شكرًا يا " + name + "، وصلنا ردك ودعواتك الطيبة.";
+        })
+        .catch(function(){ btn.disabled = false; err.textContent = "لم يصل الرد، تأكد من الإنترنت وحاول مرة أخرى."; });
     });
   });
 })();
