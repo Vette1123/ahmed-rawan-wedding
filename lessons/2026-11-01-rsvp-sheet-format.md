@@ -13,3 +13,7 @@ Long congratulations spilled over the neighbouring cell and hid the divider betw
 ## Rules
 - Anything that writes guest text to a sheet sets wrap and borders on the row it writes.
 - Editing `Code.gs` is not live for new replies until Deploy > Manage deployments > Edit > New version.
+
+## Follow-up
+- The first `tidyAll` left column A at 100px, so the time was cut off at the divider, and I called the sheet fixed anyway. Check every column against what the owner reported.
+- A click on the Apps Script function dropdown can miss, and Run then fires `doPost`. Confirm the selected function before Run.

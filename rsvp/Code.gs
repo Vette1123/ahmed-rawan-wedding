@@ -48,8 +48,7 @@ function tidy(sh, row, count) {
 /* Run once from the editor to fix rows saved before tidy() existed. */
 function tidyAll() {
   var sh = SpreadsheetApp.getActive().getSheets()[0];
-  sh.setColumnWidth(4, 90);
-  sh.setColumnWidth(5, 320);
+  [150, 80, 160, 90, 320].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
   tidy(sh, 1, sh.getLastRow());
   sh.getRange(1, 1, 1, HEAD.length).setFontWeight("bold");
 }
