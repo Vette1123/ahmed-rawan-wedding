@@ -17,3 +17,5 @@ python -m http.server 8765
 ## RSVP
 
 Each reply is posted to a Google Apps Script web app bound to the "Ahmed & Rawan Wedding RSVP" sheet in Google Drive. Its source is `rsvp/Code.gs`. After editing it, redeploy with Deploy > Manage deployments > Edit > New version so `rsvpUrl` stays the same.
+
+To reuse this form-to-Sheet setup on another site, follow [rsvp/README.md](rsvp/README.md).
