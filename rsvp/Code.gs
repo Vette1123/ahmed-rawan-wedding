@@ -36,6 +36,22 @@ function save(sh, p, name) {
     p.attending === "yes" ? "سيحضر" : "معتذر",
     clean(p.message, 500)
   ]);
+  tidy(sh, sh.getLastRow(), 1);
+}
+
+/* Wrapped text and real borders, so a long message stays in its own cell. */
+function tidy(sh, row, count) {
+  sh.getRange(row, 1, count, HEAD.length).setWrap(true).setVerticalAlignment("top")
+    .setBorder(true, true, true, true, true, true, "#c9a66b", SpreadsheetApp.BorderStyle.SOLID);
+}
+
+/* Run once from the editor to fix rows saved before tidy() existed. */
+function tidyAll() {
+  var sh = SpreadsheetApp.getActive().getSheets()[0];
+  sh.setColumnWidth(4, 90);
+  sh.setColumnWidth(5, 320);
+  tidy(sh, 1, sh.getLastRow());
+  sh.getRange(1, 1, 1, HEAD.length).setFontWeight("bold");
 }
 
 /* Guest text is untrusted: cap the length, and stop a leading = + - @ from running as a formula. */
