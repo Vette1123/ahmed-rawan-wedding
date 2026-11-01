@@ -34,3 +34,11 @@ test("cue scrolls on tap and hides once the guest has scrolled", () => {
 test("cue arrow respects reduced motion", () => {
   assert.match(html, /prefers-reduced-motion:reduce[\s\S]*\.down/);
 });
+
+test("no install banner covers the invitation", () => {
+  assert.match(html, /beforeinstallprompt", function\(e\)\{ e\.preventDefault/);
+});
+
+test("date labels stay readable on the gold cards", () => {
+  assert.match(html, /\.dc small\{[^}]*color:var\(--ink\)/);
+});

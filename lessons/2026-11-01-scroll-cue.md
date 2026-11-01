@@ -15,3 +15,13 @@ Older guests stopped at the first image. Replaced the hint inside the hero with 
 - A cue that must be seen is positioned against the viewport, never against content that can fall below the fold.
 - Grep a class name before using it in this single-file page; all CSS is global.
 - Run tests with `node --test tests/`.
+
+## Polish pass
+Bronze pill with a gold inlay ring and a gold coin around the arrow, a slow glint and a soft pulse. Date labels darkened, Chrome's install banner suppressed.
+
+### Mistakes
+- Left the invitation open on the phone after a device check, and its music kept playing until the owner asked for it to be closed.
+- Pushed a commit with failing tests because a long command chain did not stop on them. The push now runs only after a bare `node --test tests/` passes.
+
+### Rules
+- Close whatever a device check opened, in the same step. Run browser tests with `--mute-audio`.
