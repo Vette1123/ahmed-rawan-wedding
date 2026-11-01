@@ -20,17 +20,17 @@ test("cue is pinned to the screen, not the image", () => {
 
 test("cue is readable and easy to hit", () => {
   const css = rule(".down");
-  const font = Number(css.match(/font-size:(\d+)px/)?.[1]);
+  const font = Number(css.match(/font:\d+ (\d+)px/)?.[1]);
   const height = Number(css.match(/min-height:(\d+)px/)?.[1]);
-  assert.ok(font >= 22, `font-size ${font}px, want at least 22px`);
+  assert.ok(font >= 22, `font ${font}px, want at least 22px`);
   assert.ok(height >= 56, `min-height ${height}px, want at least 56px`);
 });
 
 test("cue scrolls on tap and hides once the guest has scrolled", () => {
-  assert.match(html, /scr\.addEventListener\("click"/);
+  assert.match(html, /down\.addEventListener\("click"/);
   assert.match(html, /classList\.toggle\("off"/);
 });
 
 test("cue arrow respects reduced motion", () => {
-  assert.match(html, /prefers-reduced-motion:reduce[\s\S]*.down/);
+  assert.match(html, /prefers-reduced-motion:reduce[\s\S]*\.down/);
 });
